@@ -16,35 +16,27 @@ document.addEventListener('DOMContentLoaded', function () {
             element: document.getElementById('gameContainer'),
             engine: engine,
             options: {
-                width: 810,
-                height: 810,
+                width: 656,
+                height: 799,
                 wireframes: false,
                 background: 'transparent'
             }
         });
 
-        // 根据新的图片设计创建障碍物
-        var offsetX = 40; // 适当调整以匹配图片中的布局
-        var offsetY = 40;
-        var spacingX = 40;
-        var spacingY = 40;
-        var rows = 19;
-        var cols = 10;
-
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-                let x = offsetX + j * spacingX;
-                let y = offsetY + i * spacingY;
-                let obstacle = Bodies.circle(x, y, 10, {
-                    isStatic: true,
-                    render: { fillStyle: 'black' }
-                });
-                World.add(world, obstacle);
-            }
+        // 创建障碍物，随机摆放
+        var numberOfObstacles = 150; // 可以调整障碍物的总数
+        for (let i = 0; i < numberOfObstacles; i++) {
+            let x = Math.random() * render.options.width;
+            let y = Math.random() * (render.options.height - 50) + 50; // 避免太接近顶部
+            let obstacle = Bodies.circle(x, y, 10, {
+                isStatic: true,
+                render: { fillStyle: 'black' }
+            });
+            World.add(world, obstacle);
         }
 
-        // 创建球体，尺寸减小至15px直径
-        var ball = Bodies.circle(405, 30, 7.5, { // 修改球体的半径为7.5px
+        // 创建球体，尺寸为5px半径
+        var ball = Bodies.circle(328, 30, 5, { // 将球的起始位置调整为容器中心
             density: 0.04,
             friction: 0.01,
             restitution: 0.8, // 高弹性
