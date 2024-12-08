@@ -9,9 +9,10 @@ body, html {
 }
 
 #gameContainer {
-    width: 768px;  /* 根据需要调整大小 */
-    height: 1365px; /* 根据需要调整大小 */
+    width: 768px;  /* 匹配你的设计图片的宽度 */
+    height: 1365px; /* 匹配你的设计图片的高度 */
     position: relative;
     border: 1px solid #000;
-    background: #fff;
+    background: url('images/MAP.png') no-repeat center center;
+    background-size: cover;
 }
