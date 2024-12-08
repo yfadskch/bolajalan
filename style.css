@@ -13,25 +13,5 @@ body, html {
     height: 1365px;
     position: relative;
     overflow: hidden;
-    background-image: url('images/MAP.png'); /* 确保这里的路径正确 */
-    background-size: cover;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-#startButton {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.ball {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: red; /* Change as needed */
+    border: 1px solid #000;
 }
