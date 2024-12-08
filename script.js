@@ -23,21 +23,22 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // 添加障碍物，根据图片布局
+        // **障碍物布局映射到图片中的点**
         var obstacles = [
-            { x: 100, y: 200 }, { x: 150, y: 300 }, { x: 200, y: 400 }, // 根据图片调整位置
-            { x: 250, y: 500 }, { x: 300, y: 600 }, { x: 350, y: 700 },
+            // 示例：在实际代码中用你图片中点的实际坐标替换这些坐标
+            { x: 100, y: 200 }, { x: 120, y: 250 }, { x: 140, y: 300 },
+            { x: 160, y: 350 }, { x: 180, y: 400 }, { x: 200, y: 450 }
         ];
 
         obstacles.forEach(pos => {
             let obstacle = Bodies.circle(pos.x, pos.y, 10, {
-                isStatic: true,
+                isStatic: true, // 确保障碍物是静止的
                 render: { fillStyle: 'black' }
             });
             World.add(world, obstacle);
         });
 
-        // 创建小球
+        // **创建自由落体的小球**
         var ball = Bodies.circle(384, 50, 5, {
             density: 0.04,
             friction: 0.01,
@@ -47,6 +48,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         World.add(world, ball);
 
+        // **运行引擎和渲染器**
         var runner = Runner.create();
         Runner.run(runner, engine);
         Render.run(render);

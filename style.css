@@ -9,8 +9,8 @@ body, html {
 }
 
 #gameContainer {
-    width: 768px; /* 匹配图片的宽度 */
-    height: 1365px; /* 匹配图片的高度 */
+    width: 768px;
+    height: 1365px;
     position: relative;
     border: 1px solid #000;
     background: url('images/MAP.png') no-repeat center center;
