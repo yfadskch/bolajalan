@@ -4,9 +4,6 @@ const ctx = canvas.getContext("2d");
 canvas.width = 400;
 canvas.height = 600;
 
-const gravity = 0.2;
-
-// 球对象
 let ball = {
   x: Math.random() * canvas.width,
   y: 50,
@@ -16,18 +13,18 @@ let ball = {
   velocityY: 2,
 };
 
-let obstacles = []; // 动态生成黑球障碍物
+let obstacles = []; // 用于动态生成黑球障碍物
+const gravity = 0.2;
 
+// 加载图片
 const image = new Image();
 image.src = "./images/MAP.png"; // 确保路径正确
-
-// 加载图片后解析黑球
 image.onload = () => {
   extractObstaclesFromImage(image);
   startSimulation();
 };
 
-// 提取黑球位置
+// 从图片提取障碍物（黑球）的位置
 function extractObstaclesFromImage(image) {
   const tempCanvas = document.createElement("canvas");
   const tempCtx = tempCanvas.getContext("2d");
@@ -46,7 +43,7 @@ function extractObstaclesFromImage(image) {
       const g = data[index + 1];
       const b = data[index + 2];
 
-      // 检测黑球 (RGB 全为 0)
+      // 如果是黑色像素 (RGB = 0, 0, 0)，生成障碍物
       if (r === 0 && g === 0 && b === 0) {
         const obstacleX = (x / image.width) * canvas.width;
         const obstacleY = (y / image.height) * canvas.height;
@@ -56,7 +53,7 @@ function extractObstaclesFromImage(image) {
   }
 }
 
-// 重置球位置
+// 重置小球位置
 function resetBall() {
   ball.x = Math.random() * canvas.width;
   ball.y = 50;
@@ -64,7 +61,7 @@ function resetBall() {
   ball.velocityY = 2;
 }
 
-// 绘制球
+// 绘制小球
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -84,13 +81,13 @@ function drawObstacles() {
   });
 }
 
-// 更新球位置
+// 更新小球位置
 function updateBall() {
-  ball.velocityY += gravity;
+  ball.velocityY += gravity; // 添加重力
   ball.x += ball.velocityX;
   ball.y += ball.velocityY;
 
-  // 与画布边界碰撞
+  // 检测与画布边界的碰撞
   if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
     ball.velocityX = -ball.velocityX;
   }
@@ -98,24 +95,24 @@ function updateBall() {
     ball.velocityY = -ball.velocityY;
   }
 
-  // 碰撞黑球障碍物
+  // 检测与障碍物的碰撞
   obstacles.forEach((obs) => {
     const dx = ball.x - obs.x;
     const dy = ball.y - obs.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
     if (distance < ball.radius + obs.radius) {
-      ball.velocityY = -ball.velocityY * 0.8;
-      ball.velocityX += Math.random() * 2 - 1;
+      ball.velocityY = -ball.velocityY * 0.8; // 反弹并减速
+      ball.velocityX += Math.random() * 2 - 1; // 添加随机水平速度
     }
   });
 
-  // 掉出画布时重置
+  // 小球掉出画布时重置
   if (ball.y - ball.radius > canvas.height) {
     resetBall();
   }
 }
 
-// 主动画循环
+// 动画主循环
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -126,7 +123,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-// 开始按钮功能
+// 启动模拟
 function startSimulation() {
   document.getElementById("startButton").addEventListener("click", () => {
     resetBall();
