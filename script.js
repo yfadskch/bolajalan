@@ -16,18 +16,18 @@ document.addEventListener('DOMContentLoaded', function () {
             element: document.getElementById('gameContainer'),
             engine: engine,
             options: {
-                width: 768,
-                height: 1365,
+                width: 810,
+                height: 810,
                 wireframes: false,
                 background: 'transparent'
             }
         });
 
         // 根据新的图片设计创建障碍物
-        var offsetX = 50; // 适当调整以匹配图片中的布局
-        var offsetY = 50;
-        var spacingX = 50;
-        var spacingY = 50;
+        var offsetX = 40; // 适当调整以匹配图片中的布局
+        var offsetY = 40;
+        var spacingX = 40;
+        var spacingY = 40;
         var rows = 19;
         var cols = 10;
 
@@ -43,8 +43,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         }
 
-        // 创建球体
-        var ball = Bodies.circle(384, 50, 20, {
+        // 创建球体，尺寸减小至15px直径
+        var ball = Bodies.circle(405, 30, 7.5, { // 修改球体的半径为7.5px
             density: 0.04,
             friction: 0.01,
             restitution: 0.8, // 高弹性
