@@ -9,9 +9,9 @@ body, html {
 }
 
 #gameContainer {
-    width: 768px;
-    height: 1365px;
+    width: 768px;  /* 根据需要调整大小 */
+    height: 1365px; /* 根据需要调整大小 */
     position: relative;
-    overflow: hidden;
     border: 1px solid #000;
+    background: #fff;
 }
