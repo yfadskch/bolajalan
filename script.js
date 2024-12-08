@@ -23,11 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // 创建障碍物，随机摆放
-        var numberOfObstacles = 150; // 可以调整障碍物的总数
+        // 创建随机摆放的障碍物
+        var numberOfObstacles = 150;
         for (let i = 0; i < numberOfObstacles; i++) {
             let x = Math.random() * render.options.width;
-            let y = Math.random() * (render.options.height - 50) + 50; // 避免太接近顶部
+            let y = Math.random() * (render.options.height - 50) + 50;
             let obstacle = Bodies.circle(x, y, 10, {
                 isStatic: true,
                 render: { fillStyle: 'black' }
@@ -35,15 +35,18 @@ document.addEventListener('DOMContentLoaded', function () {
             World.add(world, obstacle);
         }
 
-        // 创建球体，尺寸为5px半径
-        var ball = Bodies.circle(328, 30, 5, { // 将球的起始位置调整为容器中心
+        // 创建小球，尺寸为2px半径
+        var ball = Bodies.circle(328, 30, 2, { 
             density: 0.04,
             friction: 0.01,
-            restitution: 0.8, // 高弹性
+            restitution: 0.8,
             render: { fillStyle: 'red' }
         });
 
         World.add(world, ball);
+
+        console.log("Ball radius: " + ball.circleRadius);
+        console.log("Obstacle radius: 10");
 
         // 运行引擎和渲染器
         var runner = Runner.create();
