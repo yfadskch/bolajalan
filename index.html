@@ -1,14 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>动态下落游戏</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galton Board Game</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" id="container"></div>
-    <button id="startButton">开始游戏</button>
-    <script src="script.js"></script>
+  <h1>Galton Board Simulation</h1>
+  <div class="game-container">
+    <canvas id="galtonCanvas"></canvas>
+    <div class="bins">
+      <div class="bin" id="bin1">16×</div>
+      <div class="bin" id="bin2">9×</div>
+      <div class="bin" id="bin3">2×</div>
+      <div class="bin" id="bin4">1.4×</div>
+      <div class="bin" id="bin5">1.2×</div>
+      <div class="bin" id="bin6">1.1×</div>
+      <div class="bin" id="bin7">1×</div>
+      <div class="bin" id="bin8">0.5×</div>
+      <div class="bin" id="bin9">1×</div>
+      <div class="bin" id="bin10">1.1×</div>
+      <div class="bin" id="bin11">1.2×</div>
+      <div class="bin" id="bin12">1.4×</div>
+      <div class="bin" id="bin13">2×</div>
+      <div class="bin" id="bin14">9×</div>
+      <div class="bin" id="bin15">16×</div>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>

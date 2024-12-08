@@ -1,24 +1,45 @@
-.container {
-    position: relative;
-    width: 600px;
-    height: 800px;
-    background-color: #333;
-    margin: 20px auto;
-    overflow: hidden;
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #1e1e2f;
+  color: white;
 }
 
-.dot {
-    width: 10px;
-    height: 10px;
-    background-color: white;
-    position: absolute;
-    border-radius: 50%;
+h1 {
+  margin: 20px;
 }
 
-.ball {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    position: absolute;
-    top: 10px;
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+canvas {
+  background-color: #2e2e3f;
+  border: 2px solid white;
+  display: block;
+}
+
+.bins {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+}
+
+.bin {
+  text-align: center;
+  flex: 1;
+  padding: 10px;
+  margin: 0 2px;
+  background-color: #444;
+  border-radius: 4px;
+  color: white;
+  font-weight: bold;
+  font-size: 14px;
 }
