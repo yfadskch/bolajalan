@@ -1,24 +1,29 @@
 document.getElementById('startButton').addEventListener('click', function() {
-    let tracks = document.querySelectorAll('.track');
-    tracks.forEach(track => {
+    const funnelContainer = document.getElementById('funnelContainer');
+    funnelContainer.innerHTML = ''; // Clear previous balls if any
+
+    for (let i = 0; i < 8; i++) {
         let ball = document.createElement('div');
         ball.style.width = '20px';
         ball.style.height = '20px';
-        ball.style.backgroundColor = track.style.backgroundColor;
         ball.style.position = 'absolute';
         ball.style.borderRadius = '50%';
-        ball.style.top = '-20px';
-        track.appendChild(ball);
+        ball.style.background = `hsl(${i * 45}, 100%, 50%)`; // Colorful balls
+        ball.style.left = '50%';
+        ball.style.top = '10px';
+        ball.style.transform = 'translateX(-50%)';
+        funnelContainer.appendChild(ball);
 
         // Animate the ball
-        let distance = track.clientHeight;
-        let speed = Math.random() * 5000 + 2000;  // Random speed for each ball
+        let angle = Math.random() * 140 - 70; // Random angle for each ball
+        let distance = funnelContainer.clientHeight - 30;
+        let speed = Math.random() * 3000 + 2000;  // Random speed for each ball
         ball.animate([
-            { transform: 'translateY(0)' },
-            { transform: `translateY(${distance}px)` }
+            { transform: 'translateX(-50%) translateY(0px)' },
+            { transform: `translate(${Math.sin(angle) * 100}px, ${distance}px)` }
         ], {
             duration: speed,
             fill: 'forwards'
         });
-    });
+    }
 });
