@@ -6,12 +6,12 @@
 <title>自由落体游戏</title>
 <style>
     .ball {
-        width: 25px; /* 减小球体直径为原来的一半 */
-        height: 25px; /* 减小球体直径为原来的一半 */
+        width: 25px;
+        height: 25px;
         border-radius: 50%;
         position: absolute;
         top: 0;
-        transition: top 2s;
+        transition: top 2s linear; /* 修改过渡效果为线性 */
     }
     #container {
         position: relative;
@@ -21,10 +21,10 @@
     }
     .obstacle {
         position: absolute;
-        width: 80px; /* 圆形障碍物直径 */
-        height: 80px; /* 圆形障碍物直径 */
-        border-radius: 50%; /* 完全圆形 */
-        background-color: grey; /* 障碍物颜色 */
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: grey;
     }
 </style>
 </head>
@@ -54,6 +54,15 @@
 
     function startGame() {
         balls.forEach(ball => {
+            let delay = 0; // 初始无延迟
+            const obstacles = document.querySelectorAll('.obstacle');
+            obstacles.forEach(obstacle => {
+                // 简单的碰撞检测逻辑
+                if (Math.abs(parseInt(ball.style.left) - parseInt(obstacle.style.left)) < 50) {
+                    delay += 0.5; // 在障碍物附近增加延迟
+                }
+            });
+            ball.style.transitionDuration = `${2 + delay}s`; // 调整动画时间
             ball.style.top = '450px';
         });
     }
