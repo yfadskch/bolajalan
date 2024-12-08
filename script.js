@@ -1,9 +1,12 @@
-const canvas = document.getElementById("gameCanvas");
+、const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 canvas.width = 400;
 canvas.height = 600;
 
+const gravity = 0.2;
+
+// 球对象
 let ball = {
   x: Math.random() * canvas.width,
   y: 50,
@@ -14,19 +17,18 @@ let ball = {
 };
 
 let obstacles = []; // 动态生成黑球障碍物
-let boundaries = []; // 动态生成边界
 
-const gravity = 0.2;
-
-// 加载图片
 const image = new Image();
 image.src = "./images/MAP.png"; // 确保路径正确
+
+// 加载图片后解析黑球
 image.onload = () => {
-  extractLayoutFromImage(image);
+  extractObstaclesFromImage(image);
+  startSimulation();
 };
 
-// 提取图片中的布局
-function extractLayoutFromImage(image) {
+// 提取黑球位置
+function extractObstaclesFromImage(image) {
   const tempCanvas = document.createElement("canvas");
   const tempCtx = tempCanvas.getContext("2d");
 
@@ -52,10 +54,6 @@ function extractLayoutFromImage(image) {
       }
     }
   }
-
-  // 初始化动画
-  resetBall();
-  animate();
 }
 
 // 重置球位置
@@ -128,8 +126,10 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
-// 开始按钮
-document.getElementById("startButton").addEventListener("click", () => {
-  resetBall();
-  animate();
-});
+// 开始按钮功能
+function startSimulation() {
+  document.getElementById("startButton").addEventListener("click", () => {
+    resetBall();
+    animate();
+  });
+}
