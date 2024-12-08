@@ -1,18 +1,21 @@
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f0f0f0;
+body {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f0f0f0;
 }
 
-#gameContainer {
-    width: 768px;
-    height: 1365px;
-    position: relative;
-    border: 1px solid #000;
-    background: url('images/MAP.png') no-repeat center center;
-    background-size: cover;
+canvas {
+  border: 1px solid black;
+  display: block;
+}
+
+button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
 }

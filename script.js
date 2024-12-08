@@ -1,75 +1,115 @@
-document.addEventListener('DOMContentLoaded', function () {
-    var startButton = document.getElementById('startGame');
-    var obstacles = []; // 保存障碍物的数组
+const canvas = document.getElementById("gameCanvas");
+const ctx = canvas.getContext("2d");
 
-    startButton.addEventListener('click', function () {
-        removeObstacles(); // 按下按钮后移除障碍物
-        startGame();       // 开始游戏
-    });
+canvas.width = 400;
+canvas.height = 600;
 
-    function startGame() {
-        var Engine = Matter.Engine,
-            Render = Matter.Render,
-            World = Matter.World,
-            Bodies = Matter.Bodies,
-            Runner = Matter.Runner;
+let ball = {
+  x: Math.random() * canvas.width, // Random initial x position
+  y: 50,
+  radius: 10,
+  color: "red",
+  velocityX: 0,
+  velocityY: 2,
+};
 
-        var engine = Engine.create(),
-            world = engine.world;
+let blackObstacles = []; // Store black circles
+const gravity = 0.1;
 
-        var render = Render.create({
-            element: document.getElementById('gameContainer'),
-            engine: engine,
-            options: {
-                width: 768,
-                height: 1365,
-                wireframes: false,
-                background: 'transparent'
-            }
-        });
+// Create a grid of black obstacles
+function initializeObstacles() {
+  blackObstacles = [];
+  const rows = 10;
+  const cols = 10;
+  const gap = 35;
 
-        // 障碍物的布局
-        var offsetX = 65;  // 左侧起始位置
-        var offsetY = 120; // 顶部起始位置
-        var spacingX = 50; // 水平间距
-        var spacingY = 50; // 垂直间距
-        var rows = 25;     // 障碍物的总行数
-        var cols = 13;     // 障碍物的总列数
-
-        for (let i = 0; i < rows; i++) {
-            for (let j = 0; j < cols; j++) {
-                let x = offsetX + j * spacingX;
-                let y = offsetY + i * spacingY;
-                let obstacle = Bodies.circle(x, y, 10, {
-                    isStatic: true,
-                    render: { fillStyle: 'black' }
-                });
-                obstacles.push(obstacle); // 添加到障碍物数组
-                World.add(world, obstacle);
-            }
-        }
-
-        // 创建自由落体的小球
-        var ball = Bodies.circle(384, 30, 5, {
-            density: 0.04,
-            friction: 0.01,
-            restitution: 0.8,
-            render: { fillStyle: 'red' }
-        });
-
-        World.add(world, ball);
-
-        // 运行引擎和渲染器
-        var runner = Runner.create();
-        Runner.run(runner, engine);
-        Render.run(render);
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < cols; j++) {
+      const x = j * gap + 20;
+      const y = i * gap + 50;
+      blackObstacles.push({ x, y, radius: 10, color: "black" });
     }
+  }
+}
 
-    function removeObstacles() {
-        // 遍历障碍物数组并从世界中移除
-        for (let obstacle of obstacles) {
-            Matter.World.remove(engine.world, obstacle);
-        }
-        obstacles = []; // 清空数组
+// Reset ball position
+function resetBall() {
+  ball.x = Math.random() * canvas.width;
+  ball.y = 50;
+  ball.velocityX = 0;
+  ball.velocityY = 2;
+}
+
+// Detect collision with black objects
+function detectCollision(ball, obstacle) {
+  const dx = ball.x - obstacle.x;
+  const dy = ball.y - obstacle.y;
+  const distance = Math.sqrt(dx * dx + dy * dy);
+  return distance < ball.radius + obstacle.radius;
+}
+
+// Draw the ball
+function drawBall() {
+  ctx.beginPath();
+  ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+  ctx.fillStyle = ball.color;
+  ctx.fill();
+  ctx.closePath();
+}
+
+// Draw the black obstacles
+function drawObstacles() {
+  blackObstacles.forEach((obstacle) => {
+    ctx.beginPath();
+    ctx.arc(obstacle.x, obstacle.y, obstacle.radius, 0, Math.PI * 2);
+    ctx.fillStyle = obstacle.color;
+    ctx.fill();
+    ctx.closePath();
+  });
+}
+
+// Update the ball position
+function updateBall() {
+  ball.velocityY += gravity; // Apply gravity
+  ball.x += ball.velocityX;
+  ball.y += ball.velocityY;
+
+  // Check for collisions with the canvas walls
+  if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
+    ball.velocityX = -ball.velocityX;
+  }
+
+  // Bounce off black obstacles
+  blackObstacles.forEach((obstacle) => {
+    if (detectCollision(ball, obstacle)) {
+      ball.velocityY = -ball.velocityY * 0.8; // Reverse and dampen velocity
+      ball.velocityX += Math.random() * 2 - 1; // Add some horizontal randomness
     }
+  });
+
+  // Reset ball if it falls out of canvas
+  if (ball.y - ball.radius > canvas.height) {
+    resetBall();
+  }
+}
+
+// Main animation loop
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  drawObstacles();
+  drawBall();
+  updateBall();
+
+  requestAnimationFrame(animate);
+}
+
+// Start button functionality
+document.getElementById("startButton").addEventListener("click", () => {
+  resetBall();
+  initializeObstacles();
+  animate();
 });
+
+// Initialize obstacles on page load
+initializeObstacles();
