@@ -7,8 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
             Render = Matter.Render,
             World = Matter.World,
             Bodies = Matter.Bodies,
-            Body = Matter.Body,
-            Events = Matter.Events;
+            Runner = Matter.Runner;
 
         var engine = Engine.create(),
             world = engine.world;
@@ -19,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function () {
             options: {
                 width: 768,
                 height: 1365,
-                wireframes: false // 设置为false以显示样式化的渲染
+                wireframes: false
             }
         });
 
@@ -28,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
             for (let j = 0; j < 7; j++) {
                 let x = 110 + j * 100;
                 let y = 100 + i * 120;
-                let obstacle = Bodies.circle(x, y, 20, { isStatic: true, render: { fillStyle: 'black' }});
+                let obstacle = Bodies.circle(x, y, 20, { isStatic: true, render: { fillStyle: 'black' } });
                 World.add(world, obstacle);
             }
         }
@@ -43,13 +42,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         World.add(world, ball);
 
-        // 添加运动的球
-        Events.on(engine, 'beforeUpdate', function(event) {
-            Body.setVelocity(ball, { x: 0, y: +10 }); // 向下运动
-        });
-
         // 运行引擎和渲染器
-        Engine.run(engine);
+        var runner = Runner.create();
+        Runner.run(runner, engine);
         Render.run(render);
     }
 });
