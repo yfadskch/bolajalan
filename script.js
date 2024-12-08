@@ -2,28 +2,29 @@ document.getElementById('startButton').addEventListener('click', function() {
     const funnelContainer = document.getElementById('funnelContainer');
     funnelContainer.innerHTML = ''; // Clear previous balls if any
 
+    const width = funnelContainer.clientWidth;
+    const height = funnelContainer.clientHeight;
+
     for (let i = 0; i < 8; i++) {
         let ball = document.createElement('div');
-        ball.style.width = '20px';
-        ball.style.height = '20px';
-        ball.style.position = 'absolute';
-        ball.style.borderRadius = '50%';
+        ball.className = 'ball';
         ball.style.background = `hsl(${i * 45}, 100%, 50%)`; // Colorful balls
-        ball.style.left = '50%';
+        ball.style.left = `${width / 2 - 10}px`; // Start from center
         ball.style.top = '10px';
-        ball.style.transform = 'translateX(-50%)';
         funnelContainer.appendChild(ball);
 
+        // Calculate end position dynamically
+        let endX = (i - 3.5) * 30 + width / 2;
+        let angle = Math.atan2(height, endX - width / 2) * 180 / Math.PI;
+
         // Animate the ball
-        let angle = Math.random() * 140 - 70; // Random angle for each ball
-        let distance = funnelContainer.clientHeight - 30;
-        let speed = Math.random() * 3000 + 2000;  // Random speed for each ball
         ball.animate([
-            { transform: 'translateX(-50%) translateY(0px)' },
-            { transform: `translate(${Math.sin(angle) * 100}px, ${distance}px)` }
+            { transform: 'translate(0, 0)' },
+            { transform: `translate(${endX - width / 2}px, ${height}px)` }
         ], {
-            duration: speed,
-            fill: 'forwards'
+            duration: 3000 + Math.random() * 2000,  // Random speed for each ball
+            fill: 'forwards',
+            easing: 'ease-in'
         });
     }
 });

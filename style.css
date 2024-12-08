@@ -19,4 +19,13 @@ body, html {
     height: 600px;
     position: relative;
     overflow: hidden; /* Hide elements that move outside the container */
+    background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
+    clip-path: polygon(50% 0%, 80% 50%, 50% 100%, 20% 50%); /* Funnel shape */
+}
+
+.ball {
+    width: 20px;
+    height: 20px;
+    position: absolute;
+    border-radius: 50%;
 }
