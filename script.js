@@ -13,9 +13,11 @@ let ball = {
   velocityY: 2,
 };
 
-let obstacles = []; // 用于动态生成黑球障碍物
+let obstacles = []; // 动态生成障碍物
+
 const gravity = 0.2;
 
+// 加载图片
 const image = new Image();
 image.src = "./images/MAP.png"; // 确保路径正确
 image.onload = () => {
