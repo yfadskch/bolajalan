@@ -1,131 +1,72 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-canvas.width = 400;
-canvas.height = 600;
+canvas.width = 600;
+canvas.height = 800;
 
 let ball = {
-  x: Math.random() * canvas.width,
+  x: canvas.width / 2,
   y: 50,
   radius: 10,
-  color: "red",
-  velocityX: 0,
-  velocityY: 2,
+  dx: 0,
+  dy: 2,
 };
 
-let obstacles = []; // 存储障碍物
-const gravity = 0.2;
+const obstacles = [
+  { x: 100, y: 200, type: 1 },
+  { x: 200, y: 300, type: 1 },
+  { x: 400, y: 400, type: 2 },
+  { x: 300, y: 500, type: 1 },
+];
 
-// 加载背景图片
-const image = new Image();
-image.src = "./images/MAP.png"; // 确保路径正确
-image.onload = () => {
-  extractObstaclesFromImage(image);
-  startSimulation();
-};
-image.onerror = () => {
-  console.error("Failed to load image. Check the path.");
-};
-
-// 从图片中提取障碍物位置
-function extractObstaclesFromImage(image) {
-  const tempCanvas = document.createElement("canvas");
-  const tempCtx = tempCanvas.getContext("2d");
-
-  tempCanvas.width = image.width;
-  tempCanvas.height = image.height;
-  tempCtx.drawImage(image, 0, 0);
-
-  const imageData = tempCtx.getImageData(0, 0, image.width, image.height);
-  const data = imageData.data;
-
-  for (let y = 0; y < image.height; y++) {
-    for (let x = 0; x < image.width; x++) {
-      const index = (y * image.width + x) * 4;
-      const r = data[index];
-      const g = data[index + 1];
-      const b = data[index + 2];
-
-      if (r === 0 && g === 0 && b === 0) {
-        const obstacleX = (x / image.width) * canvas.width;
-        const obstacleY = (y / image.height) * canvas.height;
-        obstacles.push({ x: obstacleX, y: obstacleY, radius: 5 });
-      }
-    }
-  }
-}
-
-// 重置球的位置
-function resetBall() {
-  ball.x = Math.random() * canvas.width;
-  ball.y = 50;
-  ball.velocityX = 0;
-  ball.velocityY = 2;
-}
-
-// 绘制球
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
-  ctx.fillStyle = ball.color;
+  ctx.fillStyle = "red";
   ctx.fill();
   ctx.closePath();
 }
 
-// 绘制障碍物
 function drawObstacles() {
   obstacles.forEach((obs) => {
     ctx.beginPath();
-    ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
-    ctx.fillStyle = "black";
+    ctx.arc(obs.x, obs.y, 15, 0, Math.PI * 2);
+    ctx.fillStyle = obs.type === 1 ? "black" : "blue";
     ctx.fill();
     ctx.closePath();
   });
 }
 
-// 更新球的位置
 function updateBall() {
-  ball.velocityY += gravity;
-  ball.x += ball.velocityX;
-  ball.y += ball.velocityY;
+  ball.x += ball.dx;
+  ball.y += ball.dy;
 
-  if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
-    ball.velocityX = -ball.velocityX;
+  if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+    ball.dx *= -1; // 碰到左右墙壁反弹
   }
-  if (ball.y - ball.radius < 0) {
-    ball.velocityY = -ball.velocityY;
+  if (ball.y + ball.radius > canvas.height) {
+    ball.y = 50; // 到底部时重置
   }
 
   obstacles.forEach((obs) => {
-    const dx = ball.x - obs.x;
-    const dy = ball.y - obs.y;
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    if (distance < ball.radius + obs.radius) {
-      ball.velocityY = -ball.velocityY * 0.8;
-      ball.velocityX += Math.random() * 2 - 1;
+    const dist = Math.hypot(ball.x - obs.x, ball.y - obs.y);
+    if (dist < ball.radius + 15) {
+      if (obs.type === 1) {
+        ball.dy *= -1; // 黑点弹回
+      } else if (obs.type === 2) {
+        ball.dx = 0;
+        ball.dy = 0; // 蓝点阻挡球体
+      }
     }
   });
-
-  if (ball.y - ball.radius > canvas.height) {
-    resetBall();
-  }
 }
 
-// 动画主循环
-function animate() {
+function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-
   drawBall();
   drawObstacles();
   updateBall();
-
-  requestAnimationFrame(animate);
+  requestAnimationFrame(draw);
 }
 
-// 启动模拟
-function startSimulation() {
-  document.getElementById("startButton").addEventListener("click", () => {
-    resetBall();
-    animate();
-  });
-}
+draw();
