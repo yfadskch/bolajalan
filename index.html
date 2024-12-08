@@ -3,51 +3,63 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>同步Plinko游戏</title>
+<title>游戏示例</title>
 <style>
-    .ball {
-        width: 25px; /* 球的直径 */
-        height: 25px; /* 球的直径 */
-        border-radius: 50%;
-        position: absolute;
-        top: 0; /* 初始顶部位置 */
-        transition: all 2s ease-in; /* 平滑下落动画 */
-    }
-    #container {
-        position: relative;
-        height: 500px;
-        width: 100%;
-        background-color: #f0f0f0;
-    }
+  .container {
+    position: relative;
+    width: 600px;
+    height: 800px;
+    background-color: #333;
+    margin: 20px auto;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    position: absolute;
+    border-radius: 50%;
+  }
+  .ball {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: red;
+    position: absolute;
+    top: 10px;
+  }
 </style>
 </head>
 <body>
-<div id="container"></div>
-<button onclick="startGame()">开始游戏</button>
-
+<div class="container">
+  <div class="ball" id="ball"></div>
+  <!-- 动态生成点阵 -->
+</div>
 <script>
-    const container = document.getElementById('container');
-    const colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'cyan', 'pink'];
-    let balls = [];
+  const container = document.querySelector('.container');
+  const ball = document.getElementById('ball');
 
-    function createBalls() {
-        for (let i = 0; i < colors.length; i++) {
-            const ball = document.createElement('div');
-            ball.className = 'ball';
-            ball.style.backgroundColor = colors[i];
-            ball.style.left = `${(i * 50) + 50}px`; // 每个球的起始水平位置
-            container.appendChild(ball);
-            balls.push(ball);
-        }
+  // 生成点阵
+  function createDots(rows) {
+    let xOffset = 300;
+    let yOffset = 30;
+    for (let row = 0; row < rows; row++) {
+      for (let i = 0; i <= row; i++) {
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dot.style.left = `${xOffset - (row * 10) + (i * 20)}px`;
+        dot.style.top = `${yOffset + (row * 20)}px`;
+        container.appendChild(dot);
+      }
     }
+  }
 
-    function startGame() {
-        balls.forEach(ball => {
-            ball.style.top = '450px'; // 下落到容器底部
-        });
-    }
+  // 初始化游戏
+  function initGame() {
+    createDots(15); // 生成15行点阵
+    // 以下可以添加球的运动逻辑
+  }
 
-    createBalls(); // 初始化球体
+  initGame();
 </script>
 </body>
 </html>
