@@ -1,99 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>动态下落游戏</title>
-<style>
-  .container {
-    position: relative;
-    width: 600px;
-    height: 800px;
-    background-color: #333;
-    margin: 20px auto;
-    overflow: hidden;
-  }
-  .dot {
-    width: 10px;
-    height: 10px;
-    background-color: white;
-    position: absolute;
-    border-radius: 50%;
-  }
-  .ball {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background-color: red;
-    position: absolute;
-    top: 10px;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>动态下落游戏</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-  <div class="ball" id="ball"></div>
-  <!-- 动态生成点阵 -->
-</div>
-<button id="startButton">开始游戏</button>
-<script>
-  const container = document.querySelector('.container');
-  const balls = [];
-
-  function createDots(rows) {
-    let xOffset = 300;
-    let yOffset = 30;
-    for (let row = 0; row < rows; row++) {
-      for (let i = 0; i <= row; i++) {
-        const dot = document.createElement('div');
-        dot.className = 'dot';
-        dot.style.left = `${xOffset - (row * 10) + (i * 20)}px`;
-        dot.style.top = `${yOffset + (row * 20)}px`;
-        container.appendChild(dot);
-      }
-    }
-  }
-
-  function createBalls() {
-    const colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'cyan', 'pink'];
-    for (let i = 0; i < 8; i++) {
-      const ball = document.createElement('div');
-      ball.className = 'ball';
-      ball.style.backgroundColor = colors[i];
-      ball.style.left = `${(i * 70) + 10}px`;
-      container.appendChild(ball);
-      balls.push(ball);
-    }
-  }
-
-  document.getElementById('startButton').addEventListener('click', function() {
-    balls.forEach(ball => {
-      let speed = 0;
-      const fallInterval = setInterval(function() {
-        if (speed < 400) {
-          speed += 5; // Gradually increase speed until a maximum is reached
-        }
-        let ballTop = parseInt(ball.style.top.replace('px', ''));
-        ball.style.top = `${ballTop + speed * 0.05}px`; // Move the ball down
-
-        // Check for collisions and adjust speed
-        document.querySelectorAll('.dot').forEach(dot => {
-          let dotTop = parseInt(dot.style.top.replace('px', ''));
-          let dotLeft = parseInt(dot.style.left.replace('px', ''));
-          if (Math.abs(ballTop - dotTop) < 10 && Math.abs(parseInt(ball.style.left) - dotLeft) < 10) {
-            speed = speed * 0.8; // Reduce speed by 20% on collision
-          }
-        });
-
-        if (parseInt(ball.style.top) >= 800) {
-          clearInterval(fallInterval); // Stop the ball if it reaches the bottom of the container
-        }
-      }, 20);
-    });
-  });
-
-  createDots(15); // Generate dots
-  createBalls(); // Generate balls
-</script>
+    <div class="container" id="container"></div>
+    <button id="startButton">开始游戏</button>
+    <script src="script.js"></script>
 </body>
 </html>
