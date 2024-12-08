@@ -13,18 +13,21 @@ let ball = {
   velocityY: 2,
 };
 
-let obstacles = []; // 动态生成障碍物
-
+let obstacles = []; // 存储障碍物
 const gravity = 0.2;
 
-// 加载图片
+// 加载背景图片
 const image = new Image();
 image.src = "./images/MAP.png"; // 确保路径正确
 image.onload = () => {
   extractObstaclesFromImage(image);
   startSimulation();
 };
+image.onerror = () => {
+  console.error("Failed to load image. Check the path.");
+};
 
+// 从图片中提取障碍物位置
 function extractObstaclesFromImage(image) {
   const tempCanvas = document.createElement("canvas");
   const tempCtx = tempCanvas.getContext("2d");
@@ -52,6 +55,7 @@ function extractObstaclesFromImage(image) {
   }
 }
 
+// 重置球的位置
 function resetBall() {
   ball.x = Math.random() * canvas.width;
   ball.y = 50;
@@ -59,6 +63,7 @@ function resetBall() {
   ball.velocityY = 2;
 }
 
+// 绘制球
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -67,6 +72,7 @@ function drawBall() {
   ctx.closePath();
 }
 
+// 绘制障碍物
 function drawObstacles() {
   obstacles.forEach((obs) => {
     ctx.beginPath();
@@ -77,6 +83,7 @@ function drawObstacles() {
   });
 }
 
+// 更新球的位置
 function updateBall() {
   ball.velocityY += gravity;
   ball.x += ball.velocityX;
@@ -104,6 +111,7 @@ function updateBall() {
   }
 }
 
+// 动画主循环
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -114,6 +122,7 @@ function animate() {
   requestAnimationFrame(animate);
 }
 
+// 启动模拟
 function startSimulation() {
   document.getElementById("startButton").addEventListener("click", () => {
     resetBall();
