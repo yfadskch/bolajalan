@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>游戏示例</title>
+<title>动态下落游戏</title>
 <style>
   .container {
     position: relative;
@@ -11,6 +11,7 @@
     height: 800px;
     background-color: #333;
     margin: 20px auto;
+    overflow: hidden;
   }
   .dot {
     width: 10px;
@@ -34,11 +35,11 @@
   <div class="ball" id="ball"></div>
   <!-- 动态生成点阵 -->
 </div>
+<button id="startButton">开始游戏</button>
 <script>
   const container = document.querySelector('.container');
-  const ball = document.getElementById('ball');
+  const balls = [];
 
-  // 生成点阵
   function createDots(rows) {
     let xOffset = 300;
     let yOffset = 30;
@@ -53,13 +54,46 @@
     }
   }
 
-  // 初始化游戏
-  function initGame() {
-    createDots(15); // 生成15行点阵
-    // 以下可以添加球的运动逻辑
+  function createBalls() {
+    const colors = ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'cyan', 'pink'];
+    for (let i = 0; i < 8; i++) {
+      const ball = document.createElement('div');
+      ball.className = 'ball';
+      ball.style.backgroundColor = colors[i];
+      ball.style.left = `${(i * 70) + 10}px`;
+      container.appendChild(ball);
+      balls.push(ball);
+    }
   }
 
-  initGame();
+  document.getElementById('startButton').addEventListener('click', function() {
+    balls.forEach(ball => {
+      let speed = 0;
+      const fallInterval = setInterval(function() {
+        if (speed < 400) {
+          speed += 5; // Gradually increase speed until a maximum is reached
+        }
+        let ballTop = parseInt(ball.style.top.replace('px', ''));
+        ball.style.top = `${ballTop + speed * 0.05}px`; // Move the ball down
+
+        // Check for collisions and adjust speed
+        document.querySelectorAll('.dot').forEach(dot => {
+          let dotTop = parseInt(dot.style.top.replace('px', ''));
+          let dotLeft = parseInt(dot.style.left.replace('px', ''));
+          if (Math.abs(ballTop - dotTop) < 10 && Math.abs(parseInt(ball.style.left) - dotLeft) < 10) {
+            speed = speed * 0.8; // Reduce speed by 20% on collision
+          }
+        });
+
+        if (parseInt(ball.style.top) >= 800) {
+          clearInterval(fallInterval); // Stop the ball if it reaches the bottom of the container
+        }
+      }, 20);
+    });
+  });
+
+  createDots(15); // Generate dots
+  createBalls(); // Generate balls
 </script>
 </body>
 </html>
