@@ -1,16 +1,41 @@
-#funnelContainer {
-    width: 60%;  /* Adjust width to simulate a narrower funnel */
-    height: 600px;
-    margin-top: 50px; /* Add some spacing */
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#gameContainer {
     position: relative;
+    width: 600px;
+    height: 800px;
+    border: 2px solid black;
     overflow: hidden;
-    background: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
-    clip-path: polygon(50% 0%, 90% 50%, 50% 100%, 10% 50%); /* Enhanced funnel shape */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#funnelContainer {
+    width: 100%;
+    height: 100%;
+    position: relative;
 }
 
 .ball {
+    position: absolute;
     width: 20px;
     height: 20px;
-    position: absolute;
     border-radius: 50%;
+    background-color: red;
+}
+
+.obstacle {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background-color: black;
 }
