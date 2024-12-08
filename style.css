@@ -5,17 +5,25 @@ body {
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background: #f0f0f0;
+  background: #f9f9f9;
 }
 
 canvas {
   border: 1px solid black;
-  display: block;
+  background-color: white;
 }
 
 button {
-  margin-top: 10px;
+  margin-top: 20px;
   padding: 10px 20px;
   font-size: 16px;
   cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+}
+
+button:hover {
+  background-color: #0056b3;
 }
