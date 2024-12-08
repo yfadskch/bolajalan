@@ -8,17 +8,27 @@ let ball = {
   x: canvas.width / 2,
   y: 50,
   radius: 10,
-  dx: 0,
-  dy: 2,
+  dy: 0, // 初始速度为 0
+  falling: false, // 控制是否开始落体
 };
 
-const obstacles = [
-  { x: 100, y: 200, type: 1 },
-  { x: 200, y: 300, type: 1 },
-  { x: 400, y: 400, type: 2 },
-  { x: 300, y: 500, type: 1 },
-];
+const obstacles = [];
+const rows = 6;
+const cols = 7;
+const offset = 80;
 
+// 生成反漏斗形的障碍物
+for (let i = 0; i < rows; i++) {
+  for (let j = 0; j < cols - i; j++) {
+    obstacles.push({
+      x: 100 + j * offset + (i * offset) / 2,
+      y: 200 + i * offset,
+      radius: 15,
+    });
+  }
+}
+
+// 绘制球体
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
@@ -27,40 +37,41 @@ function drawBall() {
   ctx.closePath();
 }
 
+// 绘制障碍物
 function drawObstacles() {
   obstacles.forEach((obs) => {
     ctx.beginPath();
-    ctx.arc(obs.x, obs.y, 15, 0, Math.PI * 2);
-    ctx.fillStyle = obs.type === 1 ? "black" : "blue";
+    ctx.arc(obs.x, obs.y, obs.radius, 0, Math.PI * 2);
+    ctx.fillStyle = "black";
     ctx.fill();
     ctx.closePath();
   });
 }
 
+// 更新球体位置
 function updateBall() {
-  ball.x += ball.dx;
-  ball.y += ball.dy;
+  if (ball.falling) {
+    ball.dy = 2; // 自由落体速度
+    ball.y += ball.dy;
 
-  if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
-    ball.dx *= -1; // 碰到左右墙壁反弹
-  }
-  if (ball.y + ball.radius > canvas.height) {
-    ball.y = 50; // 到底部时重置
-  }
-
-  obstacles.forEach((obs) => {
-    const dist = Math.hypot(ball.x - obs.x, ball.y - obs.y);
-    if (dist < ball.radius + 15) {
-      if (obs.type === 1) {
-        ball.dy *= -1; // 黑点弹回
-      } else if (obs.type === 2) {
-        ball.dx = 0;
-        ball.dy = 0; // 蓝点阻挡球体
+    // 检测碰撞
+    obstacles.forEach((obs) => {
+      const dist = Math.hypot(ball.x - obs.x, ball.y - obs.y);
+      if (dist < ball.radius + obs.radius) {
+        ball.x += Math.random() < 0.5 ? -30 : 30; // 碰到障碍物时随机偏移
       }
+    });
+
+    // 到达底部后重置
+    if (ball.y > canvas.height) {
+      ball.falling = false;
+      ball.y = 50;
+      ball.x = Math.random() * canvas.width; // 随机生成新位置
     }
-  });
+  }
 }
 
+// 绘制场景
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawBall();
@@ -69,4 +80,12 @@ function draw() {
   requestAnimationFrame(draw);
 }
 
+// 点击按钮开始游戏
+document.getElementById("startButton").addEventListener("click", () => {
+  ball.falling = true;
+  ball.x = Math.random() * canvas.width; // 随机起始位置
+  ball.y = 50;
+});
+
+// 启动游戏循环
 draw();
