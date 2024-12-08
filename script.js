@@ -4,9 +4,6 @@ const ctx = canvas.getContext("2d");
 canvas.width = 400;
 canvas.height = 600;
 
-const gravity = 0.2;
-
-// 球对象
 let ball = {
   x: Math.random() * canvas.width,
   y: 50,
@@ -16,20 +13,52 @@ let ball = {
   velocityY: 2,
 };
 
-// 黑球（阻拦物）和条线（边界障碍）的数据
-const obstacles = [
-  { x: 80, y: 100, radius: 15 }, // 示例黑球
-  { x: 160, y: 200, radius: 15 },
-  { x: 240, y: 300, radius: 15 },
-];
+let obstacles = []; // 动态生成黑球障碍物
+let boundaries = []; // 动态生成边界
 
-const boundaries = [
-  { x1: 0, y1: 0, x2: 400, y2: 0 }, // 示例顶部条线
-  { x1: 0, y1: 0, x2: 0, y2: 600 },  // 左侧条线
-  { x1: 400, y1: 0, x2: 400, y2: 600 } // 右侧条线
-];
+const gravity = 0.2;
 
-// 重置球的初始位置
+// 加载图片
+const image = new Image();
+image.src = "./images/MAP.png"; // 确保路径正确
+image.onload = () => {
+  extractLayoutFromImage(image);
+};
+
+// 提取图片中的布局
+function extractLayoutFromImage(image) {
+  const tempCanvas = document.createElement("canvas");
+  const tempCtx = tempCanvas.getContext("2d");
+
+  tempCanvas.width = image.width;
+  tempCanvas.height = image.height;
+  tempCtx.drawImage(image, 0, 0);
+
+  const imageData = tempCtx.getImageData(0, 0, image.width, image.height);
+  const data = imageData.data;
+
+  for (let y = 0; y < image.height; y++) {
+    for (let x = 0; x < image.width; x++) {
+      const index = (y * image.width + x) * 4;
+      const r = data[index];
+      const g = data[index + 1];
+      const b = data[index + 2];
+
+      // 检测黑球 (RGB 全为 0)
+      if (r === 0 && g === 0 && b === 0) {
+        const obstacleX = (x / image.width) * canvas.width;
+        const obstacleY = (y / image.height) * canvas.height;
+        obstacles.push({ x: obstacleX, y: obstacleY, radius: 5 });
+      }
+    }
+  }
+
+  // 初始化动画
+  resetBall();
+  animate();
+}
+
+// 重置球位置
 function resetBall() {
   ball.x = Math.random() * canvas.width;
   ball.y = 50;
@@ -46,7 +75,7 @@ function drawBall() {
   ctx.closePath();
 }
 
-// 绘制黑球
+// 绘制障碍物
 function drawObstacles() {
   obstacles.forEach((obs) => {
     ctx.beginPath();
@@ -57,43 +86,9 @@ function drawObstacles() {
   });
 }
 
-// 绘制边界
-function drawBoundaries() {
-  boundaries.forEach((line) => {
-    ctx.beginPath();
-    ctx.moveTo(line.x1, line.y1);
-    ctx.lineTo(line.x2, line.y2);
-    ctx.strokeStyle = "blue";
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    ctx.closePath();
-  });
-}
-
-// 检测球与黑球的碰撞
-function detectObstacleCollision(ball, obstacle) {
-  const dx = ball.x - obstacle.x;
-  const dy = ball.y - obstacle.y;
-  const distance = Math.sqrt(dx * dx + dy * dy);
-  return distance < ball.radius + obstacle.radius;
-}
-
-// 检测球与边界的碰撞
-function detectBoundaryCollision(ball, line) {
-  const { x1, y1, x2, y2 } = line;
-
-  // 点到直线距离公式
-  const A = ball.y - y1;
-  const B = x1 - ball.x;
-  const C = y1 * (x2 - x1) - x1 * (y2 - y1);
-  const dist = Math.abs(A * x2 + B * y2 + C) / Math.sqrt(A * A + B * B);
-
-  return dist <= ball.radius;
-}
-
-// 更新球的位置
+// 更新球位置
 function updateBall() {
-  ball.velocityY += gravity; // 重力加速度
+  ball.velocityY += gravity;
   ball.x += ball.velocityX;
   ball.y += ball.velocityY;
 
@@ -101,23 +96,18 @@ function updateBall() {
   if (ball.x - ball.radius < 0 || ball.x + ball.radius > canvas.width) {
     ball.velocityX = -ball.velocityX;
   }
-
   if (ball.y - ball.radius < 0) {
     ball.velocityY = -ball.velocityY;
   }
 
-  // 检测与黑球的碰撞
+  // 碰撞黑球障碍物
   obstacles.forEach((obs) => {
-    if (detectObstacleCollision(ball, obs)) {
-      ball.velocityY = -ball.velocityY * 0.8; // 碰撞后反弹并减速
-      ball.velocityX += Math.random() * 2 - 1; // 水平加一点随机性
-    }
-  });
-
-  // 检测与边界的碰撞
-  boundaries.forEach((line) => {
-    if (detectBoundaryCollision(ball, line)) {
+    const dx = ball.x - obs.x;
+    const dy = ball.y - obs.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < ball.radius + obs.radius) {
       ball.velocityY = -ball.velocityY * 0.8;
+      ball.velocityX += Math.random() * 2 - 1;
     }
   });
 
@@ -127,19 +117,18 @@ function updateBall() {
   }
 }
 
-// 动画主循环
+// 主动画循环
 function animate() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   drawBall();
   drawObstacles();
-  drawBoundaries();
   updateBall();
 
   requestAnimationFrame(animate);
 }
 
-// 开始按钮功能
+// 开始按钮
 document.getElementById("startButton").addEventListener("click", () => {
   resetBall();
   animate();
